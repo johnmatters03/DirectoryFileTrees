@@ -57,6 +57,7 @@ int main(void) {
   assert(BDT_insert("1root") == SUCCESS);
   assert(BDT_insert("1root/2child/3grandchild") == SUCCESS);
   assert(BDT_contains("1root") == TRUE);
+  
   assert(BDT_contains("1root/2child") == TRUE);
   assert(BDT_contains("1root/2child/3grandchild") == TRUE);
   assert(BDT_contains("anotherRoot") == FALSE);

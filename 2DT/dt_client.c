@@ -64,6 +64,7 @@ int main(void) {
   assert(DT_insert("anotherRoot") == CONFLICTING_PATH);
   assert(DT_contains("anotherRoot") == FALSE);
   assert(DT_contains("1root/2second") == FALSE);
+  fflush(stdout);
   assert(DT_insert("1root/2child/3grandchild") == ALREADY_IN_TREE);
   assert(DT_insert("anotherRoot/2nope/3noteven") == CONFLICTING_PATH);
 
@@ -111,7 +112,9 @@ int main(void) {
   assert(DT_contains("1root/2second") == FALSE);
   assert(DT_contains("1root/2second/3grandchild") == FALSE);
   assert(DT_contains("1root/2second/3grandchild/1root") == FALSE);
+  fprintf(stderr, "Checkpoint Promotion:\n%d\n", 1);
   assert((temp = DT_toString()) != NULL);
+  fprintf(stderr, "Checkpoint Promotion:\n%d\n", 2);
   fprintf(stderr, "Checkpoint 3:\n%s\n", temp);
   free(temp);
 
