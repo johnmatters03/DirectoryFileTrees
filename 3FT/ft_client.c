@@ -62,6 +62,7 @@ int main(void) {
   assert(FT_insertFile("1root/2child/", NULL, 0) == BAD_PATH);
   assert(FT_insertFile("1root//2child", NULL, 0) == BAD_PATH);
 
+
   /* putting a file at the root is illegal */
   assert(FT_insertFile("A",NULL,0) == CONFLICTING_PATH);
 

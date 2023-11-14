@@ -6,9 +6,9 @@
 #ifndef NODE_INCLUDED
 #define NODE_INCLUDED
 
-#include <stddef.h>
 #include "a4def.h"
 #include "path.h"
+#include <stddef.h>
 
 /* A Node_T is a node in a Directory Tree */
 typedef struct node *Node_T;
@@ -25,9 +25,9 @@ typedef struct node *Node_T;
                  or oNParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oNParent already has a child with this path
 */
-int Node_newChild(Path_T oPPath, Node_T oNParent, Node_T *poNResult);
+int Node_newDir(Path_T oPPath, Node_T oNParent, Node_T *poNResult);
 int Node_newFile(Path_T oPPath, Node_T oNParent, Node_T *poNResult, 
-void *pvContent);
+void *pvContent, size_t ulSize);
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
@@ -50,7 +50,7 @@ Path_T Node_getPath(Node_T oNNode);
 */
 boolean Node_hasChild(Node_T oNParent, Path_T oPPath,
                          size_t *pulChildID);
-
+                        
 /* Returns the number of children that oNParent has. */
 size_t Node_getNumChildren(Node_T oNParent);
 
@@ -77,6 +77,8 @@ Node_T Node_getParent(Node_T oNNode);
 int Node_compare(Node_T oNFirst, Node_T oNSecond);
 
 void *Node_getCont(Node_T oNNode);
+size_t Node_getContSize(Node_T oNNode);
+void *Node_replaceCont(Node_T oNNode, void *pvValue, size_t ulSize);
 
 boolean Node_isFile(Node_T oNNode);
 

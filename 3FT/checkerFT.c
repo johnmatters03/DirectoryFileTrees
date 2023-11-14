@@ -7,14 +7,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "checkerDT.h"
+#include "checkerFT.h"
 #include "dynarray.h"
 #include "path.h"
 
-
-
-/* see checkerDT.h for specification */
-boolean CheckerDT_Node_isValid(Node_T oNNode) {
+/* see checkerFT.h for specification */
+boolean CheckerFT_Node_isValid(Node_T oNNode) {
    Node_T oNParent;
    Path_T oPNPath;
    Path_T oPPPath;
@@ -23,6 +21,13 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    if(oNNode == NULL) {
       fprintf(stderr, "A node is a NULL pointer\n");
       return FALSE;
+   }
+
+   if (Node_isFile(oNNode)) {
+      if (Node_getNumChildren(oNNode) != 0) {
+         fprintf(stderr, "Number of children of a file must be zero\n");
+         return FALSE;
+      }
    }
 
    /* Sample check: parent's path must be the longest possible
@@ -52,7 +57,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    parameter list to facilitate constructing your checks.
    If you do, you should update this function comment.
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
+static boolean CheckerFT_treeCheck(Node_T oNNode, int *ulCount) {
    size_t ulIndex;
    size_t j;
    int cmp;
@@ -61,7 +66,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
 
       /* Sample check on each node: node must be valid */
       /* If not, pass that failure back up immediately */
-      if(!CheckerDT_Node_isValid(oNNode))
+      if(!CheckerFT_Node_isValid(oNNode))
          return FALSE;
       
       /* Check node count */
@@ -107,7 +112,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
-         if(!CheckerDT_treeCheck(oNChild, ulCount))
+         if(!CheckerFT_treeCheck(oNChild, ulCount))
             return FALSE;
       }
    }
@@ -115,7 +120,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
 }
 
 /* see checkerDT.h for specification */
-boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
+boolean CheckerFT_isValid(boolean bIsInitialized, Node_T oNRoot,
                           size_t ulCount) {
 
    int *count;
@@ -123,12 +128,17 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
 
    /* Sample check on a top-level data structure invariant:
       if the DT is not initialized, its count should be 0. */
-   if(!bIsInitialized)
+   if(!bIsInitialized) {
       if(ulCount != 0) {
          fprintf(stderr, "Not initialized, but count is not 0\n");
          return FALSE;
       }
-
+   } else {
+      if (oNRoot != NULL && Node_isFile(oNRoot)) {
+         fprintf(stderr, "Root node cannot be a file\n");
+         return FALSE;
+      }
+   }
    count = malloc(sizeof(size_t));
 
    if (count == NULL)
@@ -137,10 +147,11 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
       return FALSE;
    }
 
+
    *count = (int) ulCount;
 
    /* Now checks invariants recursively at each node from the root. */
-   status = CheckerDT_treeCheck(oNRoot, count);
+   status = CheckerFT_treeCheck(oNRoot, count);
 
    free(count);
    return status;
