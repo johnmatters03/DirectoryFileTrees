@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
-/* checkerDT.c                                                        */
-/* Author:                                                            */
+/* checkerFT.c                                                        */
+/* Author: John Matters, Daniel Wang                                  */
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
@@ -49,18 +49,17 @@ boolean CheckerFT_Node_isValid(Node_T oNNode) {
 }
 
 /*
-   Performs a pre-order traversal of the tree rooted at oNNode.
+   Performs a pre-order traversal of the tree rooted at oNNode with 
+   pulCount pointing to the number of nodes.
    Returns FALSE if a broken invariant is found and
    returns TRUE otherwise.
-
-   You may want to change this function's return type or
-   parameter list to facilitate constructing your checks.
-   If you do, you should update this function comment.
 */
-static boolean CheckerFT_treeCheck(Node_T oNNode, int *ulCount) {
+static boolean CheckerFT_treeCheck(Node_T oNNode, int *pulCount) {
    size_t ulIndex;
    size_t j;
    int cmp;
+
+   assert(pulCount != NULL);
 
    if(oNNode!= NULL) {
 
@@ -70,13 +69,13 @@ static boolean CheckerFT_treeCheck(Node_T oNNode, int *ulCount) {
          return FALSE;
       
       /* Check node count */
-      if (*ulCount == 0)
+      if (*pulCount == 0)
       {
          fprintf(stderr, 
          "ulCount provides incorrect count of the number of nodes in DT\n");
          return FALSE;
       }
-      *ulCount = *ulCount - 1;
+      *pulCount = *pulCount - 1;
 
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
@@ -112,14 +111,14 @@ static boolean CheckerFT_treeCheck(Node_T oNNode, int *ulCount) {
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
-         if(!CheckerFT_treeCheck(oNChild, ulCount))
+         if(!CheckerFT_treeCheck(oNChild, pulCount))
             return FALSE;
       }
    }
    return TRUE;
 }
 
-/* see checkerDT.h for specification */
+/* see checkerFT.h for specification */
 boolean CheckerFT_isValid(boolean bIsInitialized, Node_T oNRoot,
                           size_t ulCount) {
 

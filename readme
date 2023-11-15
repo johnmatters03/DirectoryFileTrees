@@ -8,7 +8,7 @@ John Matters
 ------------------------------------------------------------------------
 Student 2: What is your name?
 
-
+Daniel Wang
 
 ------------------------------------------------------------------------
 Student 1: What authorized sources of information did you use to
@@ -17,7 +17,14 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
+The course's lectures.
 
+The course's precepts.
+
+The course's website.
+
+Documents that are referenced directly by the course's website. 
+Such documents include the course's lecture slides and precept handouts.
 
 ------------------------------------------------------------------------
 Student 2: What authorized sources of information did you use to
@@ -26,7 +33,14 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
+The course's lectures.
 
+The course's precepts.
+
+The course's website.
+
+Documents that are referenced directly by the course's website. 
+Such documents include the course's lecture slides and precept handouts.
 
 ------------------------------------------------------------------------
 Student 1: What unauthorized sources of information did you use to
@@ -40,7 +54,7 @@ nature of the interaction, may additionally require the interaction
 being reported to the Committee on Discipline. Write "None" if you used
 no unauthorized sources of information.
 
-
+None
 
 ------------------------------------------------------------------------
 Student 2: What unauthorized sources of information did you use to
@@ -54,19 +68,19 @@ nature of the interaction, may additionally require the interaction
 being reported to the Committee on Discipline. Write "None" if you used
 no unauthorized sources of information.
 
-
+None
 
 ------------------------------------------------------------------------
 Student 1: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-
+Yes
 
 ------------------------------------------------------------------------
 Student 2: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-
+Yes
 
 ------------------------------------------------------------------------
 (optional) What information can you provide about your submission that
@@ -89,7 +103,7 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-
+None
 
 ------------------------------------------------------------------------
 What warnings does splint generate on your Part 3 code, and what are
@@ -97,7 +111,7 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
-
+None
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on your Part 3 code, and what are
@@ -105,7 +119,46 @@ your disagreements with them? Copy the critTer warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+critTer nodeFT.c
 
+nodeFT.c: line 390: low priority: 
+A file should contain no more than 15 functions;
+this file contains 16 functions
+
+nodeFT.c: line 161: medium priority:
+Do you want to validate 'pvContent' through an assert?
+
+nodeFT.c: line 354: medium priority:
+Do you want to validate 'pvContent' through an assert?
+
+By design, a file node can have its content pointing towards NULL,
+therefore, an assertion would be incorrect.
+
+critTer ft.c
+
+ft.c: line 227: low priority: 
+A loop should consist of fewer than 35 lines;
+this loop consists of 48 lines; consider refactoring
+
+ft.c: line 569: low priority: 
+A file should contain no more than 15 functions;
+this file contains 18 functions
+
+ft.c: line 172: medium priority:
+Do you want to validate 'pvContent' through an assert?
+
+ft.c: line 294: medium priority:
+Do you want to validate 'pvContents' through an assert?
+
+ft.c: line 397: medium priority:
+Do you want to validate 'pvNewContents' through an assert?
+
+ft.c: line 568: low priority: 
+A source code file should contain fewer than 500 lines;
+this file contains 569 lines
+
+By design, a file node can have its content pointing towards NULL,
+therefore, an assertion would be incorrect.
 
 ------------------------------------------------------------------------
 For each of the five faulty BDT implementations required by Step
@@ -123,7 +176,7 @@ the error manifests itself or is "noticed" by the client.
 ---------------------------------------------------------------
          ./bdtBad3        BDT_addChild()
 ---------------------------------------------------------------
-         ./bdtBad4        BDT_toString()
+         ./bdtBad4        BDT_strlenAccumulate()
 ---------------------------------------------------------------
          ./bdtBad5        BDT_findNode()
 ===============================================================
@@ -132,6 +185,17 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
+in insert in dtGood.c, every time a function call fails, the function
+  must free all allocated memories up to the failure and return the 
+  exit status. This could be accomplished by a helper method, which
+  would improve the readability of the code.
 
+in preOrderTraversal in dtGood.c, the function parameters are ambiguous.
+  to improve the readability of the code, rename parameters with descriptive
+  names like oNNode, oDArray, ulIndex.
+
+Path_getComponent is not used outside of path, therefore it could be
+  removed from the interface and made static in path.c, in order to make
+  the module more concise.
 
 ------------------------------------------------------------------------

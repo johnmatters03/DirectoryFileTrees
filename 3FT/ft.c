@@ -1,3 +1,8 @@
+/*--------------------------------------------------------------------*/
+/* ft.c                                                               */
+/* Author: John Matters, Daniel Wang                                  */
+/*--------------------------------------------------------------------*/
+
 #include <stddef.h>
 #include <assert.h>
 #include <string.h>
@@ -10,8 +15,11 @@
 #include "checkerFT.h"
 #include "ft.h"
 
+/* TRUE if the FT is initialized, FALSE otherwise. */
 static boolean bIsInitialized;
+/* Pointer to the root of the FT. */
 static Node_T oNRoot;
+/* Number of nodes in the FT */
 static size_t ulCount;
 
 /* --------------------------------------------------------------------
@@ -38,7 +46,7 @@ static int FT_traversePath(Path_T oPPath, Node_T *poNFurthest) {
    Node_T oNChild = NULL;
    size_t ulDepth;
    size_t i;
-   size_t ulChildID;
+   size_t ulChildID = 0;
 
    assert(oPPath != NULL);
    assert(poNFurthest != NULL);
@@ -148,6 +156,18 @@ static int FT_findNode(const char *pcPath, Node_T *poNResult) {
    return SUCCESS;
 }
 
+/* 
+   Inserts a new node with path pcPath. If isFile is TRUE, then
+   a new file node is inserted with content pvContent and size
+   ulSize, otherwise a directory node is inserted. Returns SUCCESS
+   if successfully inserted, otherwise:
+   * INITIALIZATION_ERROR if the FT is not in an initialized state
+   * BAD_PATH if pcPath does not represent a well-formatted path
+   * CONFLICTING_PATH if the root exists but is not a prefix of pcPath
+   * NOT_A_DIRECTORY if a proper prefix of pcPath exists as a file
+   * ALREADY_IN_TREE if pcPath is already in the FT (as dir or file)
+   * MEMORY_ERROR if memory could not be allocated to complete request
+*/
 static int FT_insert(const char *pcPath, boolean isFile, 
 void* pvContent, size_t ulSize) {
    int iStatus;
@@ -183,7 +203,9 @@ void* pvContent, size_t ulSize) {
       return CONFLICTING_PATH;
    }
 
+   /* attempting to insert file as root */
    if ((bIsInitialized) && (oNRoot == NULL) && (isFile)) {
+      Path_free(oPPath);
       return CONFLICTING_PATH;
    }
 
@@ -216,7 +238,13 @@ void* pvContent, size_t ulSize) {
          return iStatus;
       }
 
+      /* attempting to insert a node under a file */
       if(oNRoot != NULL && Node_isFile(oNCurr)) {
+         Path_free(oPPath);
+         Path_free(oPPrefix);
+         if(oNFirstNew != NULL)
+            (void) Node_free(oNFirstNew);
+         assert(CheckerFT_isValid(bIsInitialized, oNRoot, ulCount));
          return NOT_A_DIRECTORY;
       }
 
@@ -227,6 +255,7 @@ void* pvContent, size_t ulSize) {
          iStatus = Node_newDir(oPPrefix, oNCurr, &oNNewNode);
       }
 
+      /* insertion failed */
       if(iStatus != SUCCESS) {
          Path_free(oPPath);
          Path_free(oPPrefix);
@@ -256,11 +285,15 @@ void* pvContent, size_t ulSize) {
 }
 
 int FT_insertDir(const char *pcPath) {
+   assert(pcPath != NULL);
+
    return FT_insert(pcPath, FALSE, NULL, 0);
 }
 
 int FT_insertFile(const char *pcPath, void *pvContents, 
 size_t ulLength) {
+   assert(pcPath != NULL);
+
    return FT_insert(pcPath, TRUE, pvContents, ulLength);
 }
 
@@ -389,6 +422,8 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
    int iStatus;
 
    assert(pcPath != NULL);
+   assert(pbIsFile != NULL);
+   assert(pulSize != NULL);
    assert(CheckerFT_isValid(bIsInitialized, oNRoot, ulCount));
 
    iStatus = FT_findNode(pcPath, &oNFound);

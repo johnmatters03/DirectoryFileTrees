@@ -1,3 +1,8 @@
+/*--------------------------------------------------------------------*/
+/* checkerFT.h                                                        */
+/* Author: John Matters, Daniel Wang                                  */
+/*--------------------------------------------------------------------*/
+
 #ifndef CHECKER_INCLUDED
 #define CHECKER_INCLUDED
 

@@ -46,16 +46,15 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 /*
    Performs a pre-order traversal of the tree rooted at oNNode.
    Returns FALSE if a broken invariant is found and
-   returns TRUE otherwise.
-
-   You may want to change this function's return type or
-   parameter list to facilitate constructing your checks.
-   If you do, you should update this function comment.
+   returns TRUE otherwise. Pointer pulCount keeps track of the
+   number of the nodes in the tree.
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
+static boolean CheckerDT_treeCheck(Node_T oNNode, int *pulCount) {
    size_t ulIndex;
    size_t j;
    int cmp;
+
+   assert(pulCount != NULL);
 
    if(oNNode!= NULL) {
 
@@ -65,13 +64,13 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
          return FALSE;
       
       /* Check node count */
-      if (*ulCount == 0)
+      if (*pulCount == 0)
       {
          fprintf(stderr, 
          "ulCount provides incorrect count of the number of nodes in DT\n");
          return FALSE;
       }
-      *ulCount = *ulCount - 1;
+      *pulCount = *pulCount - 1;
 
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
@@ -101,13 +100,11 @@ static boolean CheckerDT_treeCheck(Node_T oNNode, int *ulCount) {
                fprintf(stderr, "Tree nodes not in lexicographical order\n");
                return FALSE;
             }
-
-            
          }
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
-         if(!CheckerDT_treeCheck(oNChild, ulCount))
+         if(!CheckerDT_treeCheck(oNChild, pulCount))
             return FALSE;
       }
    }
